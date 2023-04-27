@@ -1,108 +1,138 @@
+let shapes = [];
+let isCircle = true;
 let player;
-let objects = [];//almacena la posicion de los objetos
-let obstacles = [];//almacena la posicion de los obtaculos
-let score = 0;
 
-function setup() //creo el canvas y el jugador
-{
-  createCanvas(600, 600);
-  player = createVector(width/2, height/2);
+class Shape {
+  constructor(x, y, size, speed) {
+    this.x = x;
+    this.y = y;
+    this.size = size;
+    this.speed = speed;
+  }
+
+  move() {
+    this.x += this.speed;
+    if (this.x > width + this.size) {
+      this.x = -this.size;
+    }
+  }
+
+  display() {
+    // La clase Shape no tiene una implementación específica de display
+    // En cambio, cada subclase de Shape implementará su propia versión de display
+  }
+
+  collide(playerX, playerY, playerSize) {
+    let d = dist(this.x, this.y, playerX, playerY);
+    if (d < this.size/2 + playerSize/2) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
 
-function draw()
-{
+class Circle extends Shape {
+  constructor(x, y, size, speed) {
+    super(x, y, size, speed);
+  }
+
+  display() {
+    fill(255, 0, 0);
+    ellipse(this.x, this.y, this.size);
+  }
+}
+
+class Square extends Shape {
+  constructor(x, y, size, speed) {
+    super(x, y, size, speed);
+  }
+
+  display() {
+    fill(0, 0, 255);
+    rect(this.x, this.y, this.size, this.size);
+  }
+}
+
+class Player {
+  constructor(x, y, size, speed) {
+    this.x = x;
+    this.y = y;
+    this.size = size;
+    this.speed = speed;
+  }
+
+  move() {
+    if (keyIsDown(LEFT_ARROW)) {
+      this.x -= this.speed;
+    }
+    if (keyIsDown(RIGHT_ARROW)) {
+      this.x += this.speed;
+    }
+    if (keyIsDown(UP_ARROW)) {
+      this.y -= this.speed;
+    }
+    if (keyIsDown(DOWN_ARROW)) {
+      this.y += this.speed;
+    }
+
+    this.x = constrain(this.x, this.size/2, width - this.size/2);
+    this.y = constrain(this.y, this.size/2, height - this.size/2);
+  }
+
+  display() {
+    fill(0, 255, 0);
+    ellipse(this.x, this.y, this.size);
+  }
+
+  collide(shape) {
+    return shape.collide(this.x, this.y, this.size);
+  }
+}
+
+function setup() {
+  createCanvas(500, 500);
+
+  for (let i = 0; i < 10; i++) {
+    if (isCircle) {
+      shapes.push(new Circle(random(width), random(height), 30, random(1, 2)));
+    } else {
+      shapes.push(new Square(random(width), random(height), 30, random(1, 2)));
+    }
+  }
+
+  player = new Player(width/2, height/2, 30, 5);
+}
+
+function draw() {
   background(100);
-  movePlayer();//movimiento del jugador
-  drawPlayer();//la apariencia 
-  drawObjects();//dibuja los objetos
-  drawObstacles();//dibuja los obtaculos
-  checkCollisions();//verifica una colision y modifica el puntaje 
-  drawScore();//muestra la puntuacion
-}
 
-function movePlayer()//permite que el jugador se pueda mover con el teclado
-{
-  
-  if (keyIsDown(LEFT_ARROW)) {
-    player.x -= 5;
-  }
-  if (keyIsDown(RIGHT_ARROW)) {
-    player.x += 5;
-  }
-  if (keyIsDown(UP_ARROW)) {
-    player.y -= 5;
-  }
-  if (keyIsDown(DOWN_ARROW)) {
-    player.y += 5;
-  }
-}
+  player.move();
+  player.display();
 
-function drawPlayer()//creo al jugador
-{
-  fill(0, 255, 0);
-  ellipse(player.x, player.y, 20, 20);
-}
+  for (let i = 0; i < shapes.length; i++) {
+    shapes[i].move();
+    shapes[i].display();
 
-function drawObjects()//creo los objetos que suman puntos
-{
-  fill(255, 0, 0);
-  for (let i = 0; i < objects.length; i++) {
-    ellipse(objects[i].x, objects[i].y, 10, 10);
-  }
-}
-
-function drawObstacles()//creo obstaculos que restan puntos
-{
-  fill(0, 0, 255);
-  for (let i = 0; i < obstacles.length; i++) {
-    rect(obstacles[i].x, obstacles[i].y, 20, 20);
-  }
-}
-
-function checkCollisions()
-//verifico si choco con un objeto u obstaculo y sumo o resto puntos
-{
-  for (let i = 0; i < objects.length; i++) 
-  {
-    let d = dist(player.x, player.y, objects[i].x, objects[i].y);
-    if (d < 15) {
-      objects.splice(i, 1);
-      score += 10;
-    }
-  }
-  
-  for (let i = 0; i < obstacles.length; i++) 
-  {
-    let d = dist(player.x, player.y, obstacles[i].x, obstacles[i].y);
-    if (d < 20) {
-      obstacles.splice(i, 1);
-      score -= 5;
+    if (player.collide(shapes[i])) {
+      textSize(50);
+      fill(0);
+      text("Game Over", width/2 - 120, height/2);
+      noLoop();
     }
   }
 }
 
-function drawScore() //muestra la puntuacion actual del jugador
-{
-  textSize(20);
-  textAlign(RIGHT);
-  fill(0);
-  text("Puntaje(: " + score, width - 20, 30);
+function keyPressed() {
+  if (key == ' ') {
+    isCircle = !isCircle; // Invertir el valor de isCircle al presionar la barra espaciadora
+    shapes = []; // Limpiar el arreglo de formas existentes
+    for (let i = 0; i < 10; i++) {
+      if (isCircle) {
+        shapes.push(new Circle(random(width), random(height), 30, random(1, 5)));
+      } else {
+        shapes.push(new Square(random(width), random(height), 30, random(1, 5)));
+      }
+    }
+  }
 }
-
-function spawnObject()
-//creo objetos en posiciones random cada segundo
-{
-  let object = createVector(random(width), random(height));
-  objects.push(object);
-}
-
-setInterval(spawnObject, 800);
-
-function spawnObstacle()
-//creo obtaculos en posicion random cada segundo y medio
-{
-  let obstacle = createVector(random(width), random(height));
-  obstacles.push(obstacle);
-}
-
-setInterval(spawnObstacle, 1000);
