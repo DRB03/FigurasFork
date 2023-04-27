@@ -117,7 +117,7 @@ function draw() {
     if (player.collide(shapes[i])) {
       textSize(50);
       fill(0);
-      text("Game Over", width/2 - 120, height/2);
+      text("Fin del Juego ):", width/2 - 120, height/2);
       noLoop();
     }
   }
