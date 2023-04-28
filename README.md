@@ -9,4 +9,4 @@ La funcion 'changeShape' cambia el valor de la variable 'isCircle' para determin
 
 ## DIAGRAMA UML DEL JUEGO
 Una posible representacion del juego en el diamagra UML es la siguiente, que representa las herencias y las relaciones que hay entre las clases y funciones del juego.
-![alt text](https://imgur.com/a/YbDlVdi "UML")
+![](https://github.com/DRB03/FigurasFork/blob/main/diagrama%20del%20juego%20javascript.png)
