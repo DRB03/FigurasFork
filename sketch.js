@@ -129,7 +129,7 @@ function setup()
   player = new Player(width/2, height/2, 30, 5);
 }
 
-function draw()
+ function draw()
 //actualiza la posicion de las formas y dibuja el canvas 
  {
   background(100);

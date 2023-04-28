@@ -6,3 +6,7 @@ Inicie con la clase "Shape" como la clase base que tendria las propiedades y met
 Luego con la funcion 'setup' inicio el canvas y creo circulos y cuadrados, despues la funcion 'draw' que se encarga de actualizar la posicion de las formas y dibujarlas en el canvas. El polimorfismo se logra a traves del metodo 'display' que esta definido en la clase base pero se sobrescribe en las subclases.
 Despues con la variable booleana 'isCircle' determino si la forma actual es un cuadrado o un circulo, el 'setup' crea las formas al inicio en base a la variable 'isCircle'.
 La funcion 'changeShape' cambia el valor de la variable 'isCircle' para determinar que forma crear,  y con la funcion 'keyPressed' detecta cuando se presiona la barra de espacio para cambiar el valor de la variable 'isCircle' y que así el arreglo 'shapes' se limpie para eliminar las formas anteriores y genere las nuevas formas ya sea de cuadrados a circulos o viceversa.
+
+## DIAGRAMA UML DEL JUEGO
+Una posible representacion del juego en el diamagra UML es la siguiente, que representa las herencias y las relaciones que hay entre las clases y funciones del juego.
+![alt text](https://imgur.com/a/YbDlVdi "UML")
